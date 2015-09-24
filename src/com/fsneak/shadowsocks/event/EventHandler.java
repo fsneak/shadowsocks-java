@@ -1,6 +1,6 @@
-package com.xiezhiheng.shadowsocks.event;
+package com.fsneak.shadowsocks.event;
 
-import com.xiezhiheng.shadowsocks.ShadowsocksLocal;
+import com.fsneak.shadowsocks.ShadowsocksLocal;
 
 /**
  * @author xiezhiheng

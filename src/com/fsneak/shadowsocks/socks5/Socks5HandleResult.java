@@ -1,4 +1,4 @@
-package com.xiezhiheng.shadowsocks.socks5;
+package com.fsneak.shadowsocks.socks5;
 
 import java.nio.ByteBuffer;
 

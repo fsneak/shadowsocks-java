@@ -1,4 +1,4 @@
-package com.xiezhiheng.shadowsocks;
+package com.fsneak.shadowsocks;
 
 import java.io.IOException;
 import java.net.SocketAddress;

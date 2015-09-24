@@ -1,4 +1,4 @@
-package com.xiezhiheng.shadowsocks.event;
+package com.fsneak.shadowsocks.event;
 
 import java.nio.channels.SelectionKey;
 

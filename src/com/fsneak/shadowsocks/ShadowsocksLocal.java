@@ -1,8 +1,8 @@
-package com.xiezhiheng.shadowsocks;
+package com.fsneak.shadowsocks;
 
-import com.xiezhiheng.shadowsocks.encrypt.EncryptionType;
-import com.xiezhiheng.shadowsocks.event.Event;
-import com.xiezhiheng.shadowsocks.event.EventQueue;
+import com.fsneak.shadowsocks.encrypt.EncryptionType;
+import com.fsneak.shadowsocks.event.Event;
+import com.fsneak.shadowsocks.event.EventQueue;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;

@@ -1,7 +1,7 @@
-package com.xiezhiheng.shadowsocks.event;
+package com.fsneak.shadowsocks.event;
 
-import com.xiezhiheng.shadowsocks.ShadowsocksLocal;
-import com.xiezhiheng.shadowsocks.log.Logger;
+import com.fsneak.shadowsocks.log.Logger;
+import com.fsneak.shadowsocks.ShadowsocksLocal;
 
 import java.io.IOException;
 import java.nio.channels.SelectionKey;

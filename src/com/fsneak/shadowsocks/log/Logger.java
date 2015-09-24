@@ -1,4 +1,4 @@
-package com.xiezhiheng.shadowsocks.log;
+package com.fsneak.shadowsocks.log;
 
 /**
  * @author xiezhiheng

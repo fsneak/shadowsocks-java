@@ -1,6 +1,6 @@
-package com.xiezhiheng.shadowsocks.socks5;
+package com.fsneak.shadowsocks.socks5;
 
-import com.xiezhiheng.shadowsocks.log.Logger;
+import com.fsneak.shadowsocks.log.Logger;
 
 import java.nio.ByteBuffer;
 
