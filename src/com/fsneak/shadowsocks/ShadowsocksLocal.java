@@ -1,6 +1,6 @@
 package com.fsneak.shadowsocks;
 
-import com.fsneak.shadowsocks.encrypt.EncryptionType;
+import com.fsneak.shadowsocks.crypto.EncryptionType;
 import com.fsneak.shadowsocks.event.Event;
 import com.fsneak.shadowsocks.event.EventQueue;
 

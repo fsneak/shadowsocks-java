@@ -41,7 +41,16 @@ import java.nio.ByteBuffer;
  * @author xiezhiheng
  */
 public class Socks5HelloHandler implements  Socks5StageHandler {
+	private static final Socks5HelloHandler INSTANCE = new Socks5HelloHandler();
+
 	private static final byte[] RESPONSE_TO_LOCAL = {5, 0};
+
+	private Socks5HelloHandler() {
+	}
+
+	public static Socks5HelloHandler getInstance() {
+		return INSTANCE;
+	}
 
 	@Override
 	public Socks5HandleResult handle(ByteBuffer buffer) {

@@ -1,4 +1,4 @@
-package com.fsneak.shadowsocks.encrypt;
+package com.fsneak.shadowsocks.crypto;
 
 /**
  * @author xiezhiheng

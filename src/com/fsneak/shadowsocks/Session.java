@@ -15,8 +15,8 @@ public class Session {
 
 	public enum Stage {
 		SOCKS5_HELLO,
-		SOCKS5_ADDR,
-		TRANSFER;
+		SOCKS5_ADDRESS,
+		TRANSFER
 	}
 
 	private Stage stage;
