@@ -1,19 +1,17 @@
 package com.fsneak.shadowsocks.event;
 
-import com.fsneak.shadowsocks.Session;
 import com.fsneak.shadowsocks.ShadowsocksLocal;
+import com.fsneak.shadowsocks.crypto.EncryptionHandler;
 import com.fsneak.shadowsocks.log.Logger;
-import com.fsneak.shadowsocks.socks5.Socks5HandleResult;
-import com.fsneak.shadowsocks.socks5.Socks5HandlerFactory;
-import com.fsneak.shadowsocks.socks5.Socks5StageHandler;
+import com.fsneak.shadowsocks.session.ChannelData;
+import com.fsneak.shadowsocks.session.Session;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
 
 /**
- * @author xiezhiheng
+ * @author fsneak
  */
 public class ReadEventHandler implements EventHandler<ReadEvent> {
 
@@ -22,34 +20,53 @@ public class ReadEventHandler implements EventHandler<ReadEvent> {
 		SelectionKey key = event.getKey();
 		SocketChannel channel = (SocketChannel) key.channel();
 		Session session = (Session) key.attachment();
-		try {
-			int size = channel.read(session.getReadBuffer());
-			if (size < 0) {
-				// TODO close session
-			}
+
+        if (session.isClosed()) {
+            return;
+        }
+
+        try {
+            ChannelData data = session.getData(channel);
+            ByteBuffer readBuffer = data.getReadBuffer();
+            int size = channel.read(readBuffer);
+            if (size < 0) {
+                session.close();
+                return;
+            }
+
+            readBuffer.flip();
 
 
-		} catch (IOException e) {
-			Logger.error(e);
-		}
-
-	}
-
-	private void handleReadBuffer(Session session) {
-		Session.Stage stage = session.getStage();
-		if (stage == Session.Stage.TRANSFER) {
-			ByteBuffer readBuffer = session.getReadBuffer();
-			readBuffer.flip();
-			ByteBuffer copyBuffer = ByteBuffer.allocate(readBuffer.remaining());
-			copyBuffer.put(readBuffer);
-		} else {
-			Socks5StageHandler handler = Socks5HandlerFactory.getHandler(session.getStage());
-			Socks5HandleResult result = handler.handle(session.getReadBuffer());
-
-		}
-	}
-
-	private void transferData() {
+        } catch (Throwable t) {
+            Logger.error(t);
+        }
 
 	}
+
+    private void handleLocalRead(ShadowsocksLocal shadowsocksLocal, Session session, ChannelData data) {
+        if (session.getStage() == Session.Stage.TRANSFER) {
+            EncryptionHandler encryptionHandler = shadowsocksLocal.getEncryptionHandler();
+            byte[] bytes = readAndCompact(data.getReadBuffer());
+            byte[] encryptedBytes = encryptionHandler.encrypt(bytes);
+            session.transferData(data.getType(), encryptedBytes);
+        }
+    }
+
+    private void handleRemoteRead(ShadowsocksLocal shadowsocksLocal, Session session, ChannelData data) {
+        // all remote data should by decrypted and transfer to local channel
+        EncryptionHandler encryptionHandler = shadowsocksLocal.getEncryptionHandler();
+        byte[] bytes = readAndCompact(data.getReadBuffer());
+        byte[] decryptedBytes = encryptionHandler.decrypt(bytes);
+        session.transferData(data.getType(), decryptedBytes);
+    }
+
+    private void transferData(ShadowsocksLocal shadowsocksLocal, Session session, ChannelData source) {
+
+    }
+
+	private byte[] readAndCompact(ByteBuffer buffer) {
+        byte[] bytes = new byte[buffer.remaining()];
+        buffer.get(bytes).compact();
+        return bytes;
+    }
 }

@@ -1,5 +1,7 @@
 package com.fsneak.shadowsocks;
 
+import com.fsneak.shadowsocks.crypto.EncryptionHandler;
+import com.fsneak.shadowsocks.crypto.EncryptionHandlerFactory;
 import com.fsneak.shadowsocks.crypto.EncryptionType;
 import com.fsneak.shadowsocks.event.Event;
 import com.fsneak.shadowsocks.event.EventQueue;
@@ -10,8 +12,6 @@ import java.net.SocketAddress;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * @author xiezhiheng
@@ -19,10 +19,8 @@ import java.util.concurrent.Executors;
 public class ShadowsocksLocal {
 	private final SocketAddress serverAddress;
 	private final int localPort;
-	private final String password;
-	private final EncryptionType encryptionType;
+    private final EncryptionHandler encryptionHandler;
 
-	private ExecutorService listeningService;
 	private ServerSocketChannel localAcceptor;
 	private Selector selector;
 	private EventQueue eventQueue;
@@ -31,18 +29,24 @@ public class ShadowsocksLocal {
 	                        EncryptionType encryptionType) {
 		this.serverAddress = serverAddress;
 		this.localPort = localPort;
-		this.password = password;
-		this.encryptionType = encryptionType;
+        encryptionHandler = EncryptionHandlerFactory.createHandler(encryptionType, password);
 
 		eventQueue = new EventQueue();
-		listeningService = Executors.newSingleThreadExecutor();
 	}
 
 	public void start() {
 
 	}
 
-	public ServerSocketChannel getLocalAcceptor() {
+    public EncryptionHandler getEncryptionHandler() {
+        return encryptionHandler;
+    }
+
+    public SocketAddress getServerAddress() {
+        return serverAddress;
+    }
+
+    public ServerSocketChannel getLocalAcceptor() {
 		return localAcceptor;
 	}
 

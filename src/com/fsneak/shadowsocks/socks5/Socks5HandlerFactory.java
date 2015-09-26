@@ -1,6 +1,6 @@
 package com.fsneak.shadowsocks.socks5;
 
-import com.fsneak.shadowsocks.Session;
+import com.fsneak.shadowsocks.session.Session;
 
 /**
  * @author xiezhiheng

@@ -1,6 +1,6 @@
 package com.fsneak.shadowsocks.event;
 
-import com.fsneak.shadowsocks.Session;
+import com.fsneak.shadowsocks.session.Session;
 import com.fsneak.shadowsocks.ShadowsocksLocal;
 import com.fsneak.shadowsocks.log.Logger;
 
