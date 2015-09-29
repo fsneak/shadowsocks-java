@@ -3,7 +3,7 @@ package com.fsneak.shadowsocks.event;
 import java.util.LinkedList;
 
 /**
- * @author xiezhiheng
+ * @author fsneak
  */
 public class EventQueue {
 	private final LinkedList<Event> list = new LinkedList<Event>();

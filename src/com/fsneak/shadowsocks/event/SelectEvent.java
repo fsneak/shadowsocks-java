@@ -1,7 +1,11 @@
 package com.fsneak.shadowsocks.event;
 
 /**
- * @author xiezhiheng
+ * @author fsneak
  */
 public class SelectEvent extends Event {
+    @Override
+    public Type getType() {
+        return Type.SELECT;
+    }
 }

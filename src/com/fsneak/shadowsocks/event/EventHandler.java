@@ -1,9 +1,7 @@
 package com.fsneak.shadowsocks.event;
 
-import com.fsneak.shadowsocks.ShadowsocksLocal;
-
 /**
- * @author xiezhiheng
+ * @author fsneak
  */
 public interface EventHandler<T extends Event> {
 	void handle(T event);

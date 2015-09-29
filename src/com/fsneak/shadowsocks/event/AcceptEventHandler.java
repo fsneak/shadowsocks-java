@@ -11,11 +11,19 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 
 /**
- * @author xiezhiheng
+ * @author fsneak
  */
 public class AcceptEventHandler implements EventHandler<AcceptEvent> {
+    private static final AcceptEventHandler INSTANCE = new AcceptEventHandler();
 
-	@Override
+    private AcceptEventHandler() {
+    }
+
+    public static AcceptEventHandler getInstance() {
+        return INSTANCE;
+    }
+
+    @Override
 	public void handle(AcceptEvent event) {
 		ServerSocketChannel acceptor = ShadowsocksLocal.getInstance().getLocalAcceptor();
 		Selector selector = ShadowsocksLocal.getInstance().getSelector();

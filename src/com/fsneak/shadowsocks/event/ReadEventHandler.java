@@ -18,8 +18,16 @@ import java.nio.channels.SocketChannel;
  * @author fsneak
  */
 public class ReadEventHandler implements EventHandler<ReadEvent> {
+    private static final ReadEventHandler INSTANCE = new ReadEventHandler();
 
-	@Override
+    private ReadEventHandler() {
+    }
+
+    public static ReadEventHandler getInstance() {
+        return INSTANCE;
+    }
+
+    @Override
 	public void handle(ReadEvent event) {
 		SelectionKey key = event.getKey();
 		SocketChannel channel = (SocketChannel) key.channel();

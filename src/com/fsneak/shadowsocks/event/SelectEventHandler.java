@@ -10,9 +10,18 @@ import java.util.Iterator;
 import java.util.Set;
 
 /**
- * @author xiezhiheng
+ * @author fsneak
  */
 public class SelectEventHandler implements EventHandler<SelectEvent> {
+    private static final SelectEventHandler INSTANCE = new SelectEventHandler();
+
+    private SelectEventHandler() {
+    }
+
+    public static SelectEventHandler getInstance() {
+        return INSTANCE;
+    }
+
 	@Override
 	public void handle(SelectEvent event) {
 		Selector selector = ShadowsocksLocal.getInstance().getSelector();

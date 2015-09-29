@@ -3,7 +3,7 @@ package com.fsneak.shadowsocks.event;
 import java.nio.channels.SelectionKey;
 
 /**
- * @author xiezhiheng
+ * @author fsneak
  */
 public class ReadEvent extends Event {
 	private final SelectionKey key;
@@ -12,7 +12,12 @@ public class ReadEvent extends Event {
 		this.key = key;
 	}
 
-	public SelectionKey getKey() {
+    @Override
+    public Type getType() {
+        return Type.READ;
+    }
+
+    public SelectionKey getKey() {
 		return key;
 	}
 }

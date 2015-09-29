@@ -15,6 +15,11 @@ public class WriteEvent extends Event {
         this.channelType = channelType;
     }
 
+    @Override
+    public Type getType() {
+        return Type.WRITE;
+    }
+
     public ChannelType getChannelType() {
         return channelType;
     }
