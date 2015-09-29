@@ -13,10 +13,10 @@ public class Socks5HandleResult {
 	}
 
 	private final Type type;
-	private final ByteBuffer responseToLocal;
-	private final ByteBuffer responseToRemote;
+	private final byte[] responseToLocal;
+	private final byte[] responseToRemote;
 
-	public Socks5HandleResult(Type type, ByteBuffer responseToLocal, ByteBuffer responseToRemote) {
+	public Socks5HandleResult(Type type, byte[] responseToLocal, byte[] responseToRemote) {
 		this.type = type;
 		this.responseToLocal = responseToLocal;
 		this.responseToRemote = responseToRemote;
@@ -26,11 +26,11 @@ public class Socks5HandleResult {
 		this(type, null, null);
 	}
 
-	public ByteBuffer getResponseToLocal() {
+	public byte[] getResponseToLocal() {
 		return responseToLocal;
 	}
 
-	public ByteBuffer getResponseToRemote() {
+	public byte[] getResponseToRemote() {
 		return responseToRemote;
 	}
 

@@ -17,6 +17,8 @@ import java.nio.channels.ServerSocketChannel;
  * @author xiezhiheng
  */
 public class ShadowsocksLocal {
+	private static final ShadowsocksLocal INSTANCE = new ShadowsocksLocal(Config.getInstance());
+
 	private final SocketAddress serverAddress;
 	private final int localPort;
     private final EncryptionHandler encryptionHandler;
@@ -25,13 +27,15 @@ public class ShadowsocksLocal {
 	private Selector selector;
 	private EventQueue eventQueue;
 
-	public ShadowsocksLocal(SocketAddress serverAddress, int localPort, String password,
-	                        EncryptionType encryptionType) {
-		this.serverAddress = serverAddress;
-		this.localPort = localPort;
-        encryptionHandler = EncryptionHandlerFactory.createHandler(encryptionType, password);
-
+	public ShadowsocksLocal(Config config) {
+		serverAddress = config.getServerAddress();
+		localPort = config.getLocalPort();
+        encryptionHandler = EncryptionHandlerFactory.createHandler(config.getEncryptionType(), config.getPassword());
 		eventQueue = new EventQueue();
+	}
+
+	public static ShadowsocksLocal getInstance() {
+		return INSTANCE;
 	}
 
 	public void start() {

@@ -120,11 +120,10 @@ public class Socks5AddressHandler implements Socks5StageHandler {
 		// full data has been received
 		Logger.info("connect to " + address);
 		buffer.position(pos);
-		ByteBuffer copyBuffer = ByteBuffer.allocate(buffer.remaining());
-		copyBuffer.put(buffer).flip();
+        byte[] bufferContents = new byte[buffer.remaining()];
+        buffer.get(bufferContents);
 
-		return new Socks5HandleResult(Socks5HandleResult.Type.COMPLETED,
-				ByteBuffer.wrap(SOCKS5_ADDR_RESPONSE), copyBuffer);
+		return new Socks5HandleResult(Socks5HandleResult.Type.COMPLETED, SOCKS5_ADDR_RESPONSE, bufferContents);
 	}
 
 	private SocketAddress parseIpV4(ByteBuffer buffer) throws UnknownHostException {

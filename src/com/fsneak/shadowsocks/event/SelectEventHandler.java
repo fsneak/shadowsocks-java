@@ -14,9 +14,9 @@ import java.util.Set;
  */
 public class SelectEventHandler implements EventHandler<SelectEvent> {
 	@Override
-	public void handle(ShadowsocksLocal shadowsocksLocal, SelectEvent event) {
-		Selector selector = shadowsocksLocal.getSelector();
-		EventQueue eventQueue = shadowsocksLocal.getEventQueue();
+	public void handle(SelectEvent event) {
+		Selector selector = ShadowsocksLocal.getInstance().getSelector();
+		EventQueue eventQueue = ShadowsocksLocal.getInstance().getEventQueue();
 		try {
 			int ready;
 			if (eventQueue.isEmpty()) {
@@ -31,7 +31,7 @@ public class SelectEventHandler implements EventHandler<SelectEvent> {
 				Iterator<SelectionKey> iterator = selectionKeys.iterator();
 				while (iterator.hasNext()) {
 					SelectionKey key = iterator.next();
-					handleKey(shadowsocksLocal, key);
+					handleKey(key);
 					iterator.remove();
 				}
 			}
@@ -42,12 +42,12 @@ public class SelectEventHandler implements EventHandler<SelectEvent> {
 		}
 	}
 
-	private void handleKey(ShadowsocksLocal shadowsocksLocal, SelectionKey key) {
+	private void handleKey(SelectionKey key) {
 		if (!key.isValid()) {
 			return;
 		}
 
-		EventQueue eventQueue = shadowsocksLocal.getEventQueue();
+		EventQueue eventQueue = ShadowsocksLocal.getInstance().getEventQueue();
 		if (key.isAcceptable()) {
 			eventQueue.addEvent(new AcceptEvent());
 		} else if (key.isReadable()) {

@@ -1,7 +1,7 @@
 package com.fsneak.shadowsocks.event;
 
-import com.fsneak.shadowsocks.session.Session;
 import com.fsneak.shadowsocks.ShadowsocksLocal;
+import com.fsneak.shadowsocks.session.Session;
 import com.fsneak.shadowsocks.log.Logger;
 
 import java.io.IOException;
@@ -16,9 +16,9 @@ import java.nio.channels.SocketChannel;
 public class AcceptEventHandler implements EventHandler<AcceptEvent> {
 
 	@Override
-	public void handle(ShadowsocksLocal shadowsocksLocal, AcceptEvent event) {
-		ServerSocketChannel acceptor = shadowsocksLocal.getLocalAcceptor();
-		Selector selector = shadowsocksLocal.getSelector();
+	public void handle(AcceptEvent event) {
+		ServerSocketChannel acceptor = ShadowsocksLocal.getInstance().getLocalAcceptor();
+		Selector selector = ShadowsocksLocal.getInstance().getSelector();
 		try {
 			SocketChannel localChannel = acceptor.accept();
 			if (localChannel != null) {

@@ -71,8 +71,7 @@ public class Socks5HelloHandler implements  Socks5StageHandler {
 
 		// skip
 		buffer.position(buffer.position() + len);
-		return new Socks5HandleResult(Socks5HandleResult.Type.COMPLETED,
-				ByteBuffer.wrap(RESPONSE_TO_LOCAL), null);
+		return new Socks5HandleResult(Socks5HandleResult.Type.COMPLETED, RESPONSE_TO_LOCAL, null);
 	}
 
 	public static void main(String[] args) {
