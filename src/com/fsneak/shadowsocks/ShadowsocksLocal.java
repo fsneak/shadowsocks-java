@@ -2,7 +2,6 @@ package com.fsneak.shadowsocks;
 
 import com.fsneak.shadowsocks.crypto.EncryptionHandler;
 import com.fsneak.shadowsocks.crypto.EncryptionHandlerFactory;
-import com.fsneak.shadowsocks.crypto.EncryptionType;
 import com.fsneak.shadowsocks.event.Event;
 import com.fsneak.shadowsocks.event.EventHandler;
 import com.fsneak.shadowsocks.event.EventHandlerFactory;
@@ -26,9 +25,9 @@ public class ShadowsocksLocal {
 	private final int localPort;
     private final EncryptionHandler encryptionHandler;
 
-	private ServerSocketChannel localAcceptor;
-	private Selector selector;
-	private EventQueue eventQueue;
+    private final EventQueue eventQueue;
+    private ServerSocketChannel localAcceptor;
+    private Selector selector;
 
 	public ShadowsocksLocal(Config config) {
 		serverAddress = config.getServerAddress();
@@ -39,10 +38,6 @@ public class ShadowsocksLocal {
 
 	public static ShadowsocksLocal getInstance() {
 		return INSTANCE;
-	}
-
-	public void start() {
-
 	}
 
     public EncryptionHandler getEncryptionHandler() {
@@ -70,10 +65,10 @@ public class ShadowsocksLocal {
     }
 
     @SuppressWarnings("unchecked")
-    private void startListening() throws IOException {
+    public void startEventLoop() throws IOException {
 		selector = Selector.open();
 		localAcceptor = ServerSocketChannel.open();
-		localAcceptor.bind(new InetSocketAddress("localhost", localPort));
+		localAcceptor.bind(new InetSocketAddress(localPort));
 		localAcceptor.configureBlocking(false);
 		localAcceptor.register(selector, SelectionKey.OP_ACCEPT);
 
