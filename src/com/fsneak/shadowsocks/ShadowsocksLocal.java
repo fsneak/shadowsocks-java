@@ -61,9 +61,13 @@ public class ShadowsocksLocal {
 		return selector;
 	}
 
-	public EventQueue getEventQueue() {
-		return eventQueue;
-	}
+    public void addEvent(Event event) {
+        eventQueue.addEvent(event);
+    }
+
+    public boolean isEventQueueEmpty() {
+        return eventQueue.isEmpty();
+    }
 
     @SuppressWarnings("unchecked")
     private void startListening() throws IOException {

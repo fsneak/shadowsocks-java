@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * @author xiezhiheng
+ * @author fsneak
  */
 public class Session {
 	public enum Stage {
@@ -27,7 +27,7 @@ public class Session {
     private Stage stage;
 
     public Session(SocketChannel localChannel) {
-        ChannelData data = new ChannelData(this, ChannelType.LOCAL);
+        ChannelData data = new ChannelData(this, ChannelType.LOCAL, localChannel);
         channelMap.put(localChannel, data);
         stage = Stage.SOCKS5_HELLO;
     }
@@ -46,6 +46,16 @@ public class Session {
 
     public ChannelData getData(SocketChannel channel) {
         return channelMap.get(channel);
+    }
+
+    public ChannelData getData(ChannelType type) {
+        for (ChannelData channelData : channelMap.values()) {
+            if (channelData.getType() == type) {
+                return channelData;
+            }
+        }
+
+        return null;
     }
 
     public void addDataToSend(ChannelType target, byte[] originalData, boolean needEncryption) {
@@ -78,7 +88,7 @@ public class Session {
         SocketAddress address = ShadowsocksLocal.getInstance().getServerAddress();
         SocketChannel remoteChannel = SocketChannel.open(address);
         remoteChannel.configureBlocking(false);
-        channelMap.put(remoteChannel, new ChannelData(this, ChannelType.REMOTE));
+        channelMap.put(remoteChannel, new ChannelData(this, ChannelType.REMOTE, remoteChannel));
     }
 
     public void close() {
@@ -96,16 +106,6 @@ public class Session {
 
     public boolean isClosed() {
         return stage == Stage.CLOSE;
-    }
-
-    private ChannelData getData(ChannelType type) {
-        for (ChannelData channelData : channelMap.values()) {
-            if (channelData.getType() == type) {
-                return channelData;
-            }
-        }
-
-        return null;
     }
 
     private byte[] handleDataEncryption(ChannelType target, byte[] data) {

@@ -25,10 +25,9 @@ public class SelectEventHandler implements EventHandler<SelectEvent> {
 	@Override
 	public void handle(SelectEvent event) {
 		Selector selector = ShadowsocksLocal.getInstance().getSelector();
-		EventQueue eventQueue = ShadowsocksLocal.getInstance().getEventQueue();
 		try {
 			int ready;
-			if (eventQueue.isEmpty()) {
+			if (ShadowsocksLocal.getInstance().isEventQueueEmpty()) {
 				// nothing should be handled, block
 				ready = selector.select();
 			} else {
@@ -47,7 +46,7 @@ public class SelectEventHandler implements EventHandler<SelectEvent> {
 		} catch (IOException e) {
 			Logger.error(e);
 		} finally {
-			eventQueue.addEvent(new SelectEvent());
+            ShadowsocksLocal.getInstance().addEvent(new SelectEvent());
 		}
 	}
 
@@ -56,11 +55,10 @@ public class SelectEventHandler implements EventHandler<SelectEvent> {
 			return;
 		}
 
-		EventQueue eventQueue = ShadowsocksLocal.getInstance().getEventQueue();
 		if (key.isAcceptable()) {
-			eventQueue.addEvent(new AcceptEvent());
+            ShadowsocksLocal.getInstance().addEvent(new AcceptEvent());
 		} else if (key.isReadable()) {
-			eventQueue.addEvent(new ReadEvent(key));
+            ShadowsocksLocal.getInstance().addEvent(new ReadEvent(key));
 		}
 	}
 }

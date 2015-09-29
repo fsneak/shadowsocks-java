@@ -119,7 +119,6 @@ public class ReadEventHandler implements EventHandler<ReadEvent> {
     }
 
     private void addWriteEvent(Session session, ChannelType type) {
-        EventQueue eventQueue = ShadowsocksLocal.getInstance().getEventQueue();
-        eventQueue.addEvent(new WriteEvent(session, type));
+        ShadowsocksLocal.getInstance().addEvent(new WriteEvent(session, type));
     }
 }
