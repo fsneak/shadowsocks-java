@@ -1,6 +1,7 @@
 package com.fsneak.shadowsocks.event;
 
 import com.fsneak.shadowsocks.ShadowsocksLocal;
+import com.fsneak.shadowsocks.crypto.EncryptionHandler;
 import com.fsneak.shadowsocks.log.Logger;
 import com.fsneak.shadowsocks.session.ChannelData;
 import com.fsneak.shadowsocks.session.ChannelType;
@@ -52,7 +53,6 @@ public class ReadEventHandler implements EventHandler<ReadEvent> {
             Logger.error(t);
             session.close();
         }
-
 	}
 
     private void handleRead(Session session, ChannelType sourceType, ByteBuffer readableBuffer) throws IOException {
@@ -64,9 +64,9 @@ public class ReadEventHandler implements EventHandler<ReadEvent> {
     }
 
     private void handleReadTransfer(Session session, ChannelType sourceType, ByteBuffer readableBuffer) {
-        byte[] bytes = readAndCompact(readableBuffer);
-        session.addDataToSend(sourceType.getOpposite(), bytes, true);
-        addWriteEvent(session, sourceType.getOpposite());
+        byte[] bytes = new byte[readableBuffer.remaining()];
+        readableBuffer.get(bytes).compact();
+        addDataToSend(session, sourceType.getOpposite(), bytes, true);
     }
 
     private void handleSocks5Read(Session session, ByteBuffer readableBuffer) throws IOException {
@@ -86,16 +86,14 @@ public class ReadEventHandler implements EventHandler<ReadEvent> {
 
     private void handleSocks5ReadCompleted(Session session, ByteBuffer readableBuffer, Socks5HandleResult result) throws IOException {
         if (result.getResponseToLocal() != null) {
-            session.addDataToSend(ChannelType.LOCAL, result.getResponseToLocal(), false);
-            addWriteEvent(session, ChannelType.LOCAL);
+            addDataToSend(session, ChannelType.LOCAL, result.getResponseToLocal(), false);
         }
 
         if (result.getResponseToRemote() != null) {
             if (!session.isRemoteConnected()) {
                 session.connectToRemote();
             }
-            session.addDataToSend(ChannelType.REMOTE, result.getResponseToRemote(), true);
-            addWriteEvent(session, ChannelType.REMOTE);
+            addDataToSend(session, ChannelType.REMOTE, result.getResponseToRemote(), true);
         }
 
         readableBuffer.compact();
@@ -112,13 +110,30 @@ public class ReadEventHandler implements EventHandler<ReadEvent> {
         session.close();
     }
 
-    private byte[] readAndCompact(ByteBuffer buffer) {
-        byte[] bytes = new byte[buffer.remaining()];
-        buffer.get(bytes).compact();
-        return bytes;
+    private void addDataToSend(Session session, ChannelType target, byte[] originalData, boolean needEncryption) {
+        byte[] dataToSend = originalData;
+        if (needEncryption) {
+            dataToSend = handleDataEncryption(target, originalData);
+        }
+        ChannelData channelData = session.getData(target);
+        if (channelData == null) {
+            throw new NullPointerException();
+        }
+        channelData.addDataToSend(dataToSend);
+        ShadowsocksLocal.getInstance().addEvent(new WriteEvent(session, target));
     }
 
-    private void addWriteEvent(Session session, ChannelType type) {
-        ShadowsocksLocal.getInstance().addEvent(new WriteEvent(session, type));
+    private byte[] handleDataEncryption(ChannelType target, byte[] data) {
+        EncryptionHandler encryptionHandler = ShadowsocksLocal.getInstance().getEncryptionHandler();
+        byte[] handledData;
+        if (target == ChannelType.REMOTE) {
+            handledData = encryptionHandler.encrypt(data);
+        } else if (target == ChannelType.LOCAL) {
+            handledData = encryptionHandler.decrypt(data);
+        } else {
+            throw new IllegalStateException("wrong code: " + target);
+        }
+
+        return handledData;
     }
 }

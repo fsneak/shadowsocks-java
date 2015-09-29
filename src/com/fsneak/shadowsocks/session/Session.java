@@ -1,10 +1,8 @@
 package com.fsneak.shadowsocks.session;
 
 import com.fsneak.shadowsocks.ShadowsocksLocal;
-import com.fsneak.shadowsocks.crypto.EncryptionHandler;
 import com.fsneak.shadowsocks.log.Logger;
 
-import javax.xml.ws.soap.Addressing;
 import java.io.IOException;
 import java.net.SocketAddress;
 import java.nio.channels.SocketChannel;
@@ -58,18 +56,6 @@ public class Session {
         return null;
     }
 
-    public void addDataToSend(ChannelType target, byte[] originalData, boolean needEncryption) {
-        byte[] dataToSend = originalData;
-        if (needEncryption) {
-             dataToSend = handleDataEncryption(target, originalData);
-        }
-        ChannelData channelData = getData(target);
-        if (channelData == null) {
-            throw new NullPointerException();
-        }
-        channelData.addDataToSend(dataToSend);
-    }
-
     public boolean isRemoteConnected() {
         return getData(ChannelType.REMOTE) != null;
     }
@@ -106,19 +92,5 @@ public class Session {
 
     public boolean isClosed() {
         return stage == Stage.CLOSE;
-    }
-
-    private byte[] handleDataEncryption(ChannelType target, byte[] data) {
-        EncryptionHandler encryptionHandler = ShadowsocksLocal.getInstance().getEncryptionHandler();
-        byte[] handledData;
-        if (target == ChannelType.REMOTE) {
-            handledData = encryptionHandler.encrypt(data);
-        } else if (target == ChannelType.LOCAL) {
-            handledData = encryptionHandler.decrypt(data);
-        } else {
-            throw new IllegalStateException("wrong code: " + target);
-        }
-
-        return handledData;
     }
 }
