@@ -2,10 +2,7 @@ package com.fsneak.shadowsocks;
 
 import com.fsneak.shadowsocks.crypto.EncryptionHandler;
 import com.fsneak.shadowsocks.crypto.EncryptionHandlerFactory;
-import com.fsneak.shadowsocks.event.Event;
-import com.fsneak.shadowsocks.event.EventHandler;
-import com.fsneak.shadowsocks.event.EventHandlerFactory;
-import com.fsneak.shadowsocks.event.EventQueue;
+import com.fsneak.shadowsocks.event.*;
 import com.fsneak.shadowsocks.log.Logger;
 
 import java.io.IOException;
@@ -69,14 +66,22 @@ public class ShadowsocksLocal {
 		selector = Selector.open();
 		localAcceptor = ServerSocketChannel.open();
 		localAcceptor.bind(new InetSocketAddress(localPort));
+        Logger.info("server socket bind " + localPort);
 		localAcceptor.configureBlocking(false);
 		localAcceptor.register(selector, SelectionKey.OP_ACCEPT);
 
+        addEvent(new SelectEvent());
+
+        Logger.info("start event loop");
+
 		while (true) {
 			Event event = eventQueue.poll();
+
             if (event == null) {
                 throw new IllegalStateException("event queue must not be empty");
             }
+
+            Logger.debug("handle " + event.getType().toString());
 
             try {
                 EventHandler handler = EventHandlerFactory.getHandler(event.getType());
@@ -86,4 +91,8 @@ public class ShadowsocksLocal {
             }
         }
 	}
+
+    public static void main(String[] args) throws IOException {
+        ShadowsocksLocal.getInstance().startEventLoop();
+    }
 }

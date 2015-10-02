@@ -10,8 +10,8 @@ public class Socks5HandlerFactory {
 		switch (stage) {
 			case SOCKS5_HELLO:
 				return Socks5HelloHandler.getInstance();
-			case SOCKS5_ADDRESS:
-				return Socks5AddressHandler.getInstance();
+			case SOCKS5_CONNECT:
+				return Socks5CmdHandler.getInstance();
 			default:
 				throw new IllegalArgumentException("not socks5 stage: " + stage);
 		}

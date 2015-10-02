@@ -6,8 +6,8 @@ import com.fsneak.shadowsocks.log.Logger;
 import java.io.IOException;
 import java.net.SocketAddress;
 import java.nio.channels.SocketChannel;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * @author fsneak
@@ -15,13 +15,13 @@ import java.util.TreeMap;
 public class Session {
 	public enum Stage {
 		SOCKS5_HELLO,
-		SOCKS5_ADDRESS,
+        SOCKS5_CONNECT,
 		TRANSFER,
         CLOSE,
         ;
 	}
 
-    private final Map<SocketChannel, ChannelData> channelMap = new TreeMap<>();
+    private final Map<SocketChannel, ChannelData> channelMap = new HashMap<>(4);
     private Stage stage;
 
     public Session(SocketChannel localChannel) {
@@ -36,8 +36,8 @@ public class Session {
 
     public void setSocks5NextStage() {
         if (stage == Stage.SOCKS5_HELLO) {
-            stage = Stage.SOCKS5_ADDRESS;
-        } else if (stage == Stage.SOCKS5_ADDRESS) {
+            stage = Stage.SOCKS5_CONNECT;
+        } else if (stage == Stage.SOCKS5_CONNECT) {
             stage = Stage.TRANSFER;
         }
     }

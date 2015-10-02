@@ -58,6 +58,7 @@ public class ReadEventHandler implements EventHandler<ReadEvent> {
     private void handleRead(Session session, ChannelType sourceType, ByteBuffer readableBuffer) throws IOException {
         if (session.getStage() == Session.Stage.TRANSFER) {
             handleReadTransfer(session, sourceType, readableBuffer);
+            Logger.debug("transfer data");
         } else {
             handleSocks5Read(session, readableBuffer);
         }
@@ -76,7 +77,7 @@ public class ReadEventHandler implements EventHandler<ReadEvent> {
         if (result.getType() == Socks5HandleResult.Type.COMPLETED) {
             handleSocks5ReadCompleted(session, readableBuffer, result);
         } else if (result.getType() == Socks5HandleResult.Type.UNCOMPLETED) {
-            handleSocks5ReadUncompleted(readableBuffer);
+            handleSocks5ReadUncompleted(session, readableBuffer);
         } else if (result.getType() == Socks5HandleResult.Type.ERROR) {
             handleSocks5ReadError(session);
         } else {
@@ -97,16 +98,20 @@ public class ReadEventHandler implements EventHandler<ReadEvent> {
         }
 
         readableBuffer.compact();
+
+        Logger.debug("socks5 " + session.getStage() + " completed");
+
         session.setSocks5NextStage();
     }
 
-    private void handleSocks5ReadUncompleted(ByteBuffer readableBuffer) {
+    private void handleSocks5ReadUncompleted(Session session, ByteBuffer readableBuffer) {
         readableBuffer.position(readableBuffer.limit());
         readableBuffer.limit(readableBuffer.capacity());
+        Logger.debug("socks5 " + session.getStage() + " completed");
     }
 
     private void handleSocks5ReadError(Session session) {
-        Logger.error("socks5 error, close session");
+        Logger.error(String.format("socks5 %s error, close session", session.getStage()));
         session.close();
     }
 

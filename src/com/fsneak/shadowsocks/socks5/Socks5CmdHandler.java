@@ -49,8 +49,8 @@ import java.nio.ByteBuffer;
 
  * @author xiezhiheng
  */
-public class Socks5AddressHandler implements Socks5StageHandler {
-	private static final Socks5AddressHandler INSTANCE = new Socks5AddressHandler();
+public class Socks5CmdHandler implements Socks5StageHandler {
+	private static final Socks5CmdHandler INSTANCE = new Socks5CmdHandler();
 
 	private static final byte CMD_CONNECT = 0x01;
 	private static final byte CMD_BIND = 0x02;
@@ -60,12 +60,13 @@ public class Socks5AddressHandler implements Socks5StageHandler {
 	private static final byte ATYP_DOMAINNAME = 0x03;
 	private static final byte ATYP_IPV6 = 0x04;
 
-	private static final byte[] SOCKS5_ADDR_RESPONSE = {0x05, 0, 0, 0x01, 0, 0, 0, 0, 0x10, 0x10};
+	private static final byte[] SOCKS5_CONNECT_RESPONSE = {0x05, 0, 0, 0x01, 0, 0, 0, 0, 0x10, 0x10};
+    private static final byte[] SOCKS5_UNSUPPORTED_RESPONSE = {0x05, 0x07, 0, 0x01, 0, 0, 0, 0, 0x10, 0x10};
 
-	private Socks5AddressHandler() {
+	private Socks5CmdHandler() {
 	}
 
-	public static Socks5AddressHandler getInstance() {
+	public static Socks5CmdHandler getInstance() {
 		return INSTANCE;
 	}
 
@@ -83,8 +84,8 @@ public class Socks5AddressHandler implements Socks5StageHandler {
 
 		byte cmd = buffer.get();
 		if (cmd != CMD_CONNECT) {
-			Logger.error("socks5 unsupported cmd: " + cmd);
-			return new Socks5HandleResult(Socks5HandleResult.Type.ERROR);
+			Logger.debug("socks5 unsupported cmd: " + cmd);
+			return new Socks5HandleResult(Socks5HandleResult.Type.COMPLETED, SOCKS5_UNSUPPORTED_RESPONSE, null);
 		}
 
 		buffer.get(); // skip the reserved byte
@@ -123,7 +124,7 @@ public class Socks5AddressHandler implements Socks5StageHandler {
         byte[] bufferContents = new byte[buffer.remaining()];
         buffer.get(bufferContents);
 
-		return new Socks5HandleResult(Socks5HandleResult.Type.COMPLETED, SOCKS5_ADDR_RESPONSE, bufferContents);
+		return new Socks5HandleResult(Socks5HandleResult.Type.COMPLETED, SOCKS5_CONNECT_RESPONSE, bufferContents);
 	}
 
 	private SocketAddress parseIpV4(ByteBuffer buffer) throws UnknownHostException {
