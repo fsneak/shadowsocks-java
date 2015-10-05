@@ -8,7 +8,7 @@ public class Logger {
     private static final int INFO = 1;
     private static final int ERROR = 2;
 
-    private static int LEVEL = INFO;
+    private static int LEVEL = DEBUG;
 
 	public static void error(String msg, Throwable t) {
         if (ERROR < LEVEL) {

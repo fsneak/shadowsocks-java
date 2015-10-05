@@ -1,7 +1,8 @@
 package com.fsneak.shadowsocks;
 
-import com.fsneak.shadowsocks.crypto.EncryptionHandler;
-import com.fsneak.shadowsocks.crypto.EncryptionHandlerFactory;
+import com.fsneak.shadowsocks.crypto.Cipher;
+import com.fsneak.shadowsocks.crypto.CipherFactory;
+import com.fsneak.shadowsocks.crypto.CryptoMethod;
 import com.fsneak.shadowsocks.event.*;
 import com.fsneak.shadowsocks.log.Logger;
 
@@ -20,7 +21,8 @@ public class ShadowsocksLocal {
 
 	private final SocketAddress serverAddress;
 	private final int localPort;
-    private final EncryptionHandler encryptionHandler;
+    private final String key;
+    private final CryptoMethod cryptoMethod;
 
     private final EventQueue eventQueue;
     private ServerSocketChannel localAcceptor;
@@ -29,16 +31,21 @@ public class ShadowsocksLocal {
 	public ShadowsocksLocal(Config config) {
 		serverAddress = config.getServerAddress();
 		localPort = config.getLocalPort();
-        encryptionHandler = EncryptionHandlerFactory.createHandler(config.getEncryptionType(), config.getPassword());
-		eventQueue = new EventQueue();
+        key = config.getPassword();
+        cryptoMethod = config.getCryptoMethod();
+        eventQueue = new EventQueue();
 	}
 
 	public static ShadowsocksLocal getInstance() {
 		return INSTANCE;
 	}
 
-    public EncryptionHandler getEncryptionHandler() {
-        return encryptionHandler;
+    public String getKey() {
+        return key;
+    }
+
+    public CryptoMethod getCryptoMethod() {
+        return cryptoMethod;
     }
 
     public SocketAddress getServerAddress() {

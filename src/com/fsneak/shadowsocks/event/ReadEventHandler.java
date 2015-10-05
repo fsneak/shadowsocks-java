@@ -1,7 +1,7 @@
 package com.fsneak.shadowsocks.event;
 
 import com.fsneak.shadowsocks.ShadowsocksLocal;
-import com.fsneak.shadowsocks.crypto.EncryptionHandler;
+import com.fsneak.shadowsocks.crypto.Encryptor;
 import com.fsneak.shadowsocks.log.Logger;
 import com.fsneak.shadowsocks.session.ChannelData;
 import com.fsneak.shadowsocks.session.ChannelType;
@@ -58,7 +58,7 @@ public class ReadEventHandler implements EventHandler<ReadEvent> {
     private void handleRead(Session session, ChannelType sourceType, ByteBuffer readableBuffer) throws IOException {
         if (session.getStage() == Session.Stage.TRANSFER) {
             handleReadTransfer(session, sourceType, readableBuffer);
-            Logger.debug("transfer data");
+            Logger.debug(String.format("transfer %s data", sourceType));
         } else {
             handleSocks5Read(session, readableBuffer);
         }
@@ -118,7 +118,7 @@ public class ReadEventHandler implements EventHandler<ReadEvent> {
     private void addDataToSend(Session session, ChannelType target, byte[] originalData, boolean needEncryption) {
         byte[] dataToSend = originalData;
         if (needEncryption) {
-            dataToSend = handleDataEncryption(target, originalData);
+            dataToSend = handleDataEncryption(session.getEncryptor(),target, originalData);
         }
         ChannelData channelData = session.getData(target);
         if (channelData == null) {
@@ -128,13 +128,12 @@ public class ReadEventHandler implements EventHandler<ReadEvent> {
         ShadowsocksLocal.getInstance().addEvent(new WriteEvent(session, target));
     }
 
-    private byte[] handleDataEncryption(ChannelType target, byte[] data) {
-        EncryptionHandler encryptionHandler = ShadowsocksLocal.getInstance().getEncryptionHandler();
+    private byte[] handleDataEncryption(Encryptor encryptor, ChannelType target, byte[] data) {
         byte[] handledData;
         if (target == ChannelType.REMOTE) {
-            handledData = encryptionHandler.encrypt(data);
+            handledData = encryptor.encrypt(data);
         } else if (target == ChannelType.LOCAL) {
-            handledData = encryptionHandler.decrypt(data);
+            handledData = encryptor.decrypt(data);
         } else {
             throw new IllegalStateException("wrong code: " + target);
         }

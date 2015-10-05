@@ -1,6 +1,7 @@
 package com.fsneak.shadowsocks.session;
 
 import com.fsneak.shadowsocks.ShadowsocksLocal;
+import com.fsneak.shadowsocks.crypto.Encryptor;
 import com.fsneak.shadowsocks.log.Logger;
 
 import java.io.IOException;
@@ -22,15 +23,22 @@ public class Session {
 	}
 
     private final Map<SocketChannel, ChannelData> channelMap = new HashMap<>(4);
+    private final Encryptor encryptor;
     private Stage stage;
 
     public Session(SocketChannel localChannel) {
         ChannelData data = new ChannelData(this, ChannelType.LOCAL, localChannel);
         channelMap.put(localChannel, data);
+        encryptor = new Encryptor(ShadowsocksLocal.getInstance().getKey(),
+                ShadowsocksLocal.getInstance().getCryptoMethod());
         stage = Stage.SOCKS5_HELLO;
     }
 
-	public Stage getStage() {
+    public Encryptor getEncryptor() {
+        return encryptor;
+    }
+
+    public Stage getStage() {
 		return stage;
 	}
 
