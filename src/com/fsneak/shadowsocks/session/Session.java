@@ -6,6 +6,8 @@ import com.fsneak.shadowsocks.log.Logger;
 
 import java.io.IOException;
 import java.net.SocketAddress;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.util.HashMap;
 import java.util.Map;
@@ -82,6 +84,9 @@ public class Session {
         SocketAddress address = ShadowsocksLocal.getInstance().getServerAddress();
         SocketChannel remoteChannel = SocketChannel.open(address);
         remoteChannel.configureBlocking(false);
+        Selector selector = ShadowsocksLocal.getInstance().getSelector();
+        SelectionKey selectionKey = remoteChannel.register(selector, SelectionKey.OP_READ);
+        selectionKey.attach(this);
         channelMap.put(remoteChannel, new ChannelData(this, ChannelType.REMOTE, remoteChannel));
     }
 
