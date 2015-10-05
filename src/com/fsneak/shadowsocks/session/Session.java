@@ -91,16 +91,16 @@ public class Session {
     }
 
     public void close() {
-        try {
-            for (SocketChannel socketChannel : channelMap.keySet()) {
+        for (SocketChannel socketChannel : channelMap.keySet()) {
+            try {
                 socketChannel.close();
+            } catch (IOException e) {
+                Logger.error(e);
             }
-            channelMap.clear();
-        } catch (IOException e) {
-            Logger.error(e);
-        } finally {
-            stage = Stage.CLOSE;
         }
+
+        stage = Stage.CLOSE;
+        channelMap.clear();
     }
 
     public boolean isClosed() {

@@ -1,7 +1,8 @@
 package com.fsneak.shadowsocks;
 
-import com.fsneak.shadowsocks.crypto.EncryptionType;
+import com.fsneak.shadowsocks.crypto.CryptoMethod;
 
+import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 
 /**
@@ -15,19 +16,19 @@ public class Config {
     }
 
     public SocketAddress getServerAddress() {
-        return null;
+        return new InetSocketAddress("0.0.0.0", 8388);
     }
 
     public int getLocalPort() {
-        return -1;
+        return 10888;
     }
 
     public String getPassword() {
-        return null;
+        return "key";
     }
 
-    public EncryptionType getEncryptionType() {
-        return null;
+    public CryptoMethod getCryptoMethod() {
+        return CryptoMethod.RC4_MD5;
     }
 
 }

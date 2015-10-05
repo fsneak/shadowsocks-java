@@ -84,7 +84,7 @@ public class Socks5CmdHandler implements Socks5StageHandler {
 
 		byte cmd = buffer.get();
 		if (cmd != CMD_CONNECT) {
-			Logger.debug("socks5 unsupported cmd: " + cmd);
+			Logger.info("socks5 unsupported cmd: " + cmd);
 			return new Socks5HandleResult(Socks5HandleResult.Type.COMPLETED, SOCKS5_UNSUPPORTED_RESPONSE, null);
 		}
 
