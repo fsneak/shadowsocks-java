@@ -1,7 +1,7 @@
 package com.fsneak.shadowsocks.crypto;
 
 /**
- * @author xiezhiheng
+ * @author fsneak
  */
 public interface Cipher {
 	byte[] update(byte[] input);

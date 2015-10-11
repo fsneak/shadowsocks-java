@@ -38,7 +38,7 @@ import java.nio.ByteBuffer;
  o  X'03' to X'7F' IANA ASSIGNED
  o  X'80' to X'FE' RESERVED FOR PRIVATE METHODS
  o  X'FF' NO ACCEPTABLE METHODS
- * @author xiezhiheng
+ * @author fsneak
  */
 public class Socks5HelloHandler implements  Socks5StageHandler {
 	private static final Socks5HelloHandler INSTANCE = new Socks5HelloHandler();

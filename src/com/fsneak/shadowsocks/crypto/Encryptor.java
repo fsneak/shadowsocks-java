@@ -1,10 +1,7 @@
 package com.fsneak.shadowsocks.crypto;
 
-import com.sun.corba.se.impl.orbutil.RepositoryIdCache_1_3;
-
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 

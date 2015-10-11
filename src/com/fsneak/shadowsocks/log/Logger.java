@@ -1,7 +1,7 @@
 package com.fsneak.shadowsocks.log;
 
 /**
- * @author xiezhiheng
+ * @author fsneak
  */
 public class Logger {
     private static final int DEBUG = 0;

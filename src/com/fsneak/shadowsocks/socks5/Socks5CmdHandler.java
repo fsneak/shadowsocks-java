@@ -47,7 +47,7 @@ import java.nio.ByteBuffer;
  the address is a version-6 IP address, with a length of 16 octets.
 
 
- * @author xiezhiheng
+ * @author fsneak
  */
 public class Socks5CmdHandler implements Socks5StageHandler {
 	private static final Socks5CmdHandler INSTANCE = new Socks5CmdHandler();

@@ -3,7 +3,7 @@ package com.fsneak.shadowsocks.socks5;
 import com.fsneak.shadowsocks.session.Session;
 
 /**
- * @author xiezhiheng
+ * @author fsneak
  */
 public class Socks5HandlerFactory {
 	public static Socks5StageHandler getHandler(Session.Stage stage) {

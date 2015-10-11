@@ -3,7 +3,7 @@ package com.fsneak.shadowsocks.socks5;
 import java.nio.ByteBuffer;
 
 /**
- * @author xiezhiheng
+ * @author fsneak
  */
 public final class Socks5Utils {
 	private static final byte SOCKS5_VERSION = 0x05;

@@ -3,7 +3,7 @@ package com.fsneak.shadowsocks.socks5;
 import java.nio.ByteBuffer;
 
 /**
- * @author xiezhiheng
+ * @author fsneak
  */
 public class Socks5HandleResult {
 	public enum Type {

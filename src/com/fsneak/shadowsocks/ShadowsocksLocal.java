@@ -1,7 +1,5 @@
 package com.fsneak.shadowsocks;
 
-import com.fsneak.shadowsocks.crypto.Cipher;
-import com.fsneak.shadowsocks.crypto.CipherFactory;
 import com.fsneak.shadowsocks.crypto.CryptoMethod;
 import com.fsneak.shadowsocks.event.*;
 import com.fsneak.shadowsocks.log.Logger;
@@ -14,10 +12,10 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 
 /**
- * @author xiezhiheng
+ * @author fsneak
  */
 public class ShadowsocksLocal {
-	private static final ShadowsocksLocal INSTANCE = new ShadowsocksLocal(Config.getInstance());
+	private static volatile ShadowsocksLocal INSTANCE;
 
 	private final SocketAddress serverAddress;
 	private final int localPort;
@@ -37,7 +35,21 @@ public class ShadowsocksLocal {
 	}
 
 	public static ShadowsocksLocal getInstance() {
-		return INSTANCE;
+        if (INSTANCE == null) {
+            synchronized (ShadowsocksLocal.class) {
+                if (INSTANCE == null) {
+                    Config config = null;
+                    try {
+                        config = new Config();
+                    } catch (IOException e) {
+                        Logger.error("config file error", e);
+                        System.exit(-1);
+                    }
+                    INSTANCE = new ShadowsocksLocal(config);
+                }
+            }
+        }
+        return INSTANCE;
 	}
 
     public String getKey() {
