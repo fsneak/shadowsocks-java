@@ -58,7 +58,7 @@ public class ReadEventHandler implements EventHandler<ReadEvent> {
     private void handleRead(Session session, ChannelType sourceType, ByteBuffer readableBuffer) throws IOException {
         if (session.getStage() == Session.Stage.TRANSFER) {
             handleReadTransfer(session, sourceType, readableBuffer);
-            Logger.debug(String.format("transfer %s data", sourceType));
+            Logger.debug("transfer " + sourceType + " data");
         } else {
             handleSocks5Read(session, readableBuffer);
         }
@@ -111,7 +111,7 @@ public class ReadEventHandler implements EventHandler<ReadEvent> {
     }
 
     private void handleSocks5ReadError(Session session) {
-        Logger.error(String.format("socks5 %s error, close session", session.getStage()));
+        Logger.error("socks5 " + session.getStage() + " error, close session");
         session.close();
     }
 
