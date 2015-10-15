@@ -42,6 +42,14 @@ public class Logger {
 		System.out.println(msg);
 	}
 
+    public static void debug(Throwable t) {
+        if (DEBUG < LEVEL) {
+            return;
+        }
+
+        t.printStackTrace(System.out);
+    }
+
     public static void debug(String msg) {
         if (DEBUG < LEVEL) {
             return;

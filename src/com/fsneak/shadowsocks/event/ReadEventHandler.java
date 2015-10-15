@@ -50,7 +50,7 @@ public class ReadEventHandler implements EventHandler<ReadEvent> {
             readBuffer.flip();
             handleRead(session, data.getType(), data.getReadBuffer());
         } catch (Throwable t) {
-            Logger.error(t);
+            Logger.debug(t);
             session.close();
         }
 	}
@@ -74,8 +74,10 @@ public class ReadEventHandler implements EventHandler<ReadEvent> {
         // socks5 protocol
         Socks5StageHandler handler = Socks5HandlerFactory.getHandler(session.getStage());
         Socks5HandleResult result = handler.handle(readableBuffer);
+	    sendSocks5Response(session, result);
+
         if (result.getType() == Socks5HandleResult.Type.COMPLETED) {
-            handleSocks5ReadCompleted(session, readableBuffer, result);
+            handleSocks5ReadCompleted(session, readableBuffer);
         } else if (result.getType() == Socks5HandleResult.Type.UNCOMPLETED) {
             handleSocks5ReadUncompleted(session, readableBuffer);
         } else if (result.getType() == Socks5HandleResult.Type.ERROR) {
@@ -85,26 +87,26 @@ public class ReadEventHandler implements EventHandler<ReadEvent> {
         }
     }
 
-    private void handleSocks5ReadCompleted(Session session, ByteBuffer readableBuffer, Socks5HandleResult result) throws IOException {
-        if (result.getResponseToLocal() != null) {
-            addDataToSend(session, ChannelType.LOCAL, result.getResponseToLocal(), false);
-        }
-
-        if (result.getResponseToRemote() != null) {
-            if (!session.isRemoteConnected()) {
-                session.connectToRemote();
-            }
-            addDataToSend(session, ChannelType.REMOTE, result.getResponseToRemote(), true);
-        }
-
+    private void handleSocks5ReadCompleted(Session session, ByteBuffer readableBuffer) throws IOException {
         readableBuffer.compact();
-
         Logger.debug("socks5 " + session.getStage() + " completed");
-
         session.setSocks5NextStage();
     }
 
-    private void handleSocks5ReadUncompleted(Session session, ByteBuffer readableBuffer) {
+	private void sendSocks5Response(Session session, Socks5HandleResult result) throws IOException {
+		if (result.getResponseToLocal() != null) {
+		    addDataToSend(session, ChannelType.LOCAL, result.getResponseToLocal(), false);
+		}
+
+		if (result.getResponseToRemote() != null) {
+		    if (!session.isRemoteConnected()) {
+		        session.connectToRemote();
+		    }
+		    addDataToSend(session, ChannelType.REMOTE, result.getResponseToRemote(), true);
+		}
+	}
+
+	private void handleSocks5ReadUncompleted(Session session, ByteBuffer readableBuffer) {
         readableBuffer.position(readableBuffer.limit());
         readableBuffer.limit(readableBuffer.capacity());
         Logger.debug("socks5 " + session.getStage() + " completed");
